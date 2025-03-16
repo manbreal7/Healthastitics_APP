@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="cursive"
-            android:text="24*7 HealthCare"
+            android:text="Healthistics"
             android:textColor="#EBEAEA"
             android:textSize="30sp"
             android:textStyle="bold" />
