@@ -36,7 +36,7 @@ public class LabTestDetailsActivity extends AppCompatActivity {
         // Set data to views
         tvPackageName.setText(title);
         tvDescription.setText(description);
-        tvTotalCost.setText("Total Cost: ₹" + cost + "/-");
+        tvTotalCost.setText("Total Cost:" + cost + "/-");
 
         // Close button listener
         btnClose.setOnClickListener(view -> {
@@ -59,7 +59,7 @@ public class LabTestDetailsActivity extends AppCompatActivity {
                     startActivity(new Intent(LabTestDetailsActivity.this, LabTestActivity.class));
                 }
             } catch (NumberFormatException e) {
-                Toast.makeText(getApplicationContext(), "Invalid price format.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Invalid Num Format.", Toast.LENGTH_SHORT).show();
             }
         });
     }

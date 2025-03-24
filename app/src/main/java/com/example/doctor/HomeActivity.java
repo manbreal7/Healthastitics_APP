@@ -62,5 +62,6 @@ public class HomeActivity extends AppCompatActivity {
         CardView article = findViewById(R.id.article);
         article.setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, ArticleActivity.class)));
 
+
     }
 }

@@ -9,15 +9,10 @@
     tools:context=".HomeActivity"
     android:background="@color/blue_2">
 
-    <!-- Container for the buttons at the top -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp">
-
-        <!-- Home button -->
-
-        <!-- Logout button -->
 
         <Button
             android:id="@+id/btnHome"
@@ -43,7 +38,6 @@
             android:textSize="16sp" />
     </RelativeLayout>
 
-    <!-- GridLayout for the cards -->
     <GridLayout
         android:id="@+id/gridLayout"
         android:layout_width="match_parent"
@@ -53,7 +47,7 @@
         android:columnCount="2"
         android:gravity="center"
         android:padding="10dp"
-        android:rowCount="3">
+        android:rowCount="4">
 
         <!-- Card 1 -->
         <androidx.cardview.widget.CardView
@@ -263,6 +257,8 @@
                     android:textSize="12sp" />
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
+
+
 
     </GridLayout>
 </RelativeLayout>

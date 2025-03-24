@@ -40,9 +40,9 @@ public class LabTestBookActivity extends AppCompatActivity {
         if (priceString != null && priceString.contains(":")) {
             try {
                 String[] priceParts = priceString.split(":");
-                amount = Float.parseFloat(priceParts[1]); // Extract and parse amount
+                amount = Float.parseFloat(priceParts[1].trim()); // Extract and parse amount
             } catch (NumberFormatException e) {
-                Toast.makeText(this, "Invalid price format", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Invalid Number Format.", Toast.LENGTH_SHORT).show();
             }
         }
 

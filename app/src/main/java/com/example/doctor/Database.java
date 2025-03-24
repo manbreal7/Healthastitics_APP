@@ -5,13 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import java.util.HashMap;
 
 import java.util.ArrayList;
 
 public class Database extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "healthcare.db";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 19;
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -54,16 +55,42 @@ public class Database extends SQLiteOpenHelper {
         db.execSQL(createOrderPlaceTable);
 
         // Create doctors table with doctor_name linked to users.username
+//        String createDoctorsTable = "CREATE TABLE doctors (" +
+//                "doctor_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+//                "doctor_name TEXT UNIQUE, " +  // Same as username in users table
+//                "specialization TEXT, " +
+//                "email TEXT UNIQUE, " +
+//                "hospital TEXT, " +
+//                "FOREIGN KEY (doctor_name) REFERENCES users(username) ON DELETE CASCADE)";
+//        db.execSQL(createDoctorsTable);
         String createDoctorsTable = "CREATE TABLE doctors (" +
                 "doctor_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "doctor_name TEXT UNIQUE, " +  // Same as username in users table
                 "specialization TEXT, " +
                 "email TEXT UNIQUE, " +
                 "hospital TEXT, " +
+                "hospital_address TEXT, " +
+                "experience TEXT, " +
+                "mobile_no TEXT UNIQUE, " +
+                "fees TEXT, " +
                 "FOREIGN KEY (doctor_name) REFERENCES users(username) ON DELETE CASCADE)";
         db.execSQL(createDoctorsTable);
 
+        String createBookingsTable = "CREATE TABLE bookings (" +
+                "booking_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "username TEXT, " +
+                "doctor_name TEXT, " +
+                "appointment_date TEXT, " +
+                "appointment_time TEXT, " +
+                "fees REAL, " +
+                "status TEXT DEFAULT 'Pending', " +
+                "FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE, " +
+                "FOREIGN KEY (doctor_name) REFERENCES doctors(doctor_name) ON DELETE CASCADE)";
+        db.execSQL(createBookingsTable);
 
+
+        db.execSQL(("INSERT INTO users (username, email, password, userType) VALUES " +
+                "('arnav2706', 'arnav2706@example.com', 'arnav2706', 'Patient')" ));
 
         // Insert 10 doctors into the users table
         db.execSQL("INSERT INTO users (username, email, password, userType) VALUES " +
@@ -79,17 +106,30 @@ public class Database extends SQLiteOpenHelper {
                 "('DrAnjaliMehta', 'anjali.mehta@example.com', 'password123', 'doctor')");
 
 // Insert corresponding entries into the doctors table with extra fields
-        db.execSQL("INSERT INTO doctors (doctor_name, specialization, email, hospital) VALUES " +
-                "('DrRameshSharma', 'Cardiologist', 'ramesh.sharma@example.com', 'AIIMS Delhi'), " +
-                "('DrPoojaVerma', 'Dermatologist', 'pooja.verma@example.com', 'Fortis Hospital Mumbai'), " +
-                "('DrAmitPatel', 'Neurologist', 'amit.patel@example.com', 'Apollo Hospitals Chennai'), " +
-                "('DrSnehaNair', 'Orthopedic', 'sneha.nair@example.com', 'Manipal Hospital Bangalore'), " +
-                "('DrRajeshGupta', 'Pediatrician', 'rajesh.gupta@example.com', 'Medanta Gurgaon'), " +
-                "('DrNehaKumar', 'Gynecologist', 'neha.kumar@example.com', 'Max Hospital Delhi'), " +
-                "('DrSureshYadav', 'ENT Specialist', 'suresh.yadav@example.com', 'Narayana Health Bangalore'), " +
-                "('DrPriyaJoshi', 'Oncologist', 'priya.joshi@example.com', 'Tata Memorial Hospital Mumbai'), " +
-                "('DrVikramSingh', 'Endocrinologist', 'vikram.singh@example.com', 'Kokilaben Hospital Mumbai'), " +
-                "('DrAnjaliMehta', 'Psychiatrist', 'anjali.mehta@example.com', 'Sir Ganga Ram Hospital Delhi')");
+//        db.execSQL("INSERT INTO doctors (doctor_name, specialization, email, hospital) VALUES " +
+//                "('DrRameshSharma', 'Cardiologist', 'ramesh.sharma@example.com', 'AIIMS Delhi'), " +
+//                "('DrPoojaVerma', 'Dermatologist', 'pooja.verma@example.com', 'Fortis Hospital Mumbai'), " +
+//                "('DrAmitPatel', 'Neurologist', 'amit.patel@example.com', 'Apollo Hospitals Chennai'), " +
+//                "('DrSnehaNair', 'Orthopedic', 'sneha.nair@example.com', 'Manipal Hospital Bangalore'), " +
+//                "('DrRajeshGupta', 'Pediatrician', 'rajesh.gupta@example.com', 'Medanta Gurgaon'), " +
+//                "('DrNehaKumar', 'Gynecologist', 'neha.kumar@example.com', 'Max Hospital Delhi'), " +
+//                "('DrSureshYadav', 'ENT Specialist', 'suresh.yadav@example.com', 'Narayana Health Bangalore'), " +
+//                "('DrPriyaJoshi', 'Oncologist', 'priya.joshi@example.com', 'Tata Memorial Hospital Mumbai'), " +
+//                "('DrVikramSingh', 'Endocrinologist', 'vikram.singh@example.com', 'Kokilaben Hospital Mumbai'), " +
+//                "('DrAnjaliMehta', 'Psychiatrist', 'anjali.mehta@example.com', 'Sir Ganga Ram Hospital Delhi')");
+
+        db.execSQL("INSERT INTO doctors (doctor_name, specialization, email, hospital, hospital_address, experience, mobile_no, fees) VALUES " +
+                "('DrRameshSharma', 'Cardiologist', 'ramesh.sharma@example.com', 'AIIMS Delhi', 'Ansari Nagar, Delhi', '15', '9876543210', '500'), " +
+                "('DrPoojaVerma', 'Dermatologist', 'pooja.verma@example.com', 'Fortis Hospital Mumbai', 'Mulund West, Mumbai', '10', '9876543211', '700'), " +
+                "('DrAmitPatel', 'Neurologist', 'amit.patel@example.com', 'Apollo Hospitals Chennai', 'Greams Road, Chennai', '12', '9876543212', '800'), " +
+                "('DrSnehaNair', 'Orthopedic', 'sneha.nair@example.com', 'Manipal Hospital Bangalore', 'HAL Airport Road, Bangalore', '9', '9876543213', '600'), " +
+                "('DrRajeshGupta', 'Pediatrician', 'rajesh.gupta@example.com', 'Medanta Gurgaon', 'Sector 38, Gurgaon', '14', '9876543214', '750'), " +
+                "('DrNehaKumar', 'Cardiologist', 'neha.kumar@example.com', 'Max Hospital Delhi', 'Saket, Delhi', '11', '9876543215', '650'), " +
+                "('DrSureshYadav', 'Dentist', 'suresh.yadav@example.com', 'Narayana Health Bangalore', 'Bommasandra, Bangalore', '8', '9876543216', '500'), " +
+                "('DrPriyaJoshi', 'Dermatologist', 'priya.joshi@example.com', 'Tata Memorial Hospital Mumbai', 'Parel, Mumbai', '16', '9876543217', '900'), " +
+                "('DrVikramSingh', 'Pediatrician', 'vikram.singh@example.com', 'Kokilaben Hospital Mumbai', 'Andheri West, Mumbai', '13', '9876543218', '850'), " +
+                "('DrAnjaliMehta', 'Dentist', 'anjali.mehta@example.com', 'Sir Ganga Ram Hospital Delhi', 'Rajinder Nagar, Delhi', '7', '9876543219', '550')");
+
 
 
     }
@@ -101,8 +141,72 @@ public class Database extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS cart");
         db.execSQL("DROP TABLE IF EXISTS orderplace");
         db.execSQL("DROP TABLE IF EXISTS doctors");
+        db.execSQL("DROP TABLE IF EXISTS bookings"); // Missing table drop
         onCreate(db);
     }
+
+    public String getUserEmail(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String email = null;
+        Cursor cursor = db.rawQuery("SELECT email FROM users WHERE username = ?", new String[]{username});
+        if (cursor.moveToFirst()) {
+            email = cursor.getString(0);
+        }
+        cursor.close();
+        return email;
+    }
+    public void insertBookings(String username, String doctorName, String appointmentDate, String appointmentTime, Double fees) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put("username", username);
+        values.put("doctor_name", doctorName);
+        values.put("appointment_date", appointmentDate);
+        values.put("appointment_time", appointmentTime);
+        values.put("fees", fees);
+        values.put("status", "Pending"); // Default status
+
+        db.insert("bookings", null, values);
+        db.close();
+    }
+    public String[][] getBookingData(String doctorUsername) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT username, appointment_date, appointment_time, fees, status FROM bookings WHERE doctor_name = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{doctorUsername});
+
+        if (cursor != null && cursor.getCount() > 0) {
+            String[][] bookingData = new String[cursor.getCount()][5];
+            int index = 0;
+
+            while (cursor.moveToNext()) {
+                bookingData[index][0] = cursor.getString(cursor.getColumnIndexOrThrow("username"));
+                bookingData[index][1] = cursor.getString(cursor.getColumnIndexOrThrow("appointment_date"));
+                bookingData[index][2] = cursor.getString(cursor.getColumnIndexOrThrow("appointment_time"));
+                bookingData[index][3] = String.valueOf(cursor.getDouble(cursor.getColumnIndexOrThrow("fees"))); // Convert double to string
+                bookingData[index][4] = cursor.getString(cursor.getColumnIndexOrThrow("status"));
+                index++;
+            }
+
+            cursor.close(); // Close cursor after use
+            return bookingData;
+        }
+
+        return new String[0][0]; // Return empty array if no bookings found
+    }
+
+    public void updateAppointmentStatus(String username, String appointmentDate, String appointmentTime, String doctorName, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("status", status);
+
+        int rowsUpdated = db.update("bookings", values, "username = ? AND appointment_date = ? AND appointment_time = ? AND doctor_name = ?",
+                new String[]{username, appointmentDate, appointmentTime, doctorName});
+
+        db.close();
+    }
+
+
+
 
     public String getUserType(String username){
         SQLiteDatabase db = getReadableDatabase();
@@ -118,6 +222,30 @@ public class Database extends SQLiteOpenHelper {
         db.close();
         return userType;
     }
+
+    public String[][] getDoctorsBySpecialization(String specialization) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<String[]> doctorList = new ArrayList<>();
+
+        Cursor cursor = db.rawQuery("SELECT doctor_name, hospital_address, experience, mobile_no, fees FROM doctors WHERE specialization = ?", new String[]{specialization});
+        if (cursor.moveToFirst()) {
+            do {
+                String[] doctorDetails = {
+                        "Doctor Name : " + cursor.getString(cursor.getColumnIndexOrThrow("doctor_name")),
+                        "Hospital Address : " + cursor.getString(cursor.getColumnIndexOrThrow("hospital_address")),
+                        "Experience : " + cursor.getString(cursor.getColumnIndexOrThrow("experience")),
+                        "Mobile No : " + cursor.getString(cursor.getColumnIndexOrThrow("mobile_no")),
+                        "Fees : ₹" + cursor.getString(cursor.getColumnIndexOrThrow("fees"))
+                };
+                doctorList.add(doctorDetails);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        return doctorList.toArray(new String[0][]);
+    }
+
 
     // Register a new user
     public void register(String username, String email, String password, String userType) {

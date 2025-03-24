@@ -44,16 +44,16 @@
             android:layout_height="16dp" />
 
         <!-- Username EditText -->
-        <EditText
-            android:id="@+id/doctorUsername"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_edittext"
-            android:hint="Enter username"
-            android:inputType="text"
-            android:padding="12dp"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#B0BEC5" />
+<!--        <EditText-->
+<!--            android:id="@+id/doctorUsername"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="@drawable/rounded_edittext"-->
+<!--            android:hint="Enter username"-->
+<!--            android:inputType="text"-->
+<!--            android:padding="12dp"-->
+<!--            android:textColor="#FFFFFF"-->
+<!--            android:textColorHint="#B0BEC5" />-->
 
         <!-- Spacer -->
         <View
@@ -85,6 +85,74 @@
             android:background="@drawable/rounded_edittext"
             android:hint="Enter hospital name"
             android:inputType="text"
+            android:padding="12dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#B0BEC5" />
+
+        <!-- Spacer -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="16dp" />
+
+        <!-- Hospital Address EditText -->
+        <EditText
+            android:id="@+id/doctorHospitalAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Enter hospital address"
+            android:inputType="textPostalAddress"
+            android:padding="12dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#B0BEC5" />
+
+        <!-- Spacer -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="16dp" />
+
+        <!-- Experience EditText -->
+        <EditText
+            android:id="@+id/doctorExperience"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Enter experience (years)"
+            android:inputType="number"
+            android:padding="12dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#B0BEC5" />
+
+        <!-- Spacer -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="16dp" />
+
+        <!-- Mobile Number EditText -->
+        <EditText
+            android:id="@+id/doctorMobileNo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Enter mobile number"
+            android:inputType="phone"
+            android:padding="12dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#B0BEC5" />
+
+        <!-- Spacer -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="16dp" />
+
+        <!-- Fees EditText -->
+        <EditText
+            android:id="@+id/doctorFees"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Enter consultation fees (₹)"
+            android:inputType="numberDecimal"
             android:padding="12dp"
             android:textColor="#FFFFFF"
             android:textColorHint="#B0BEC5" />

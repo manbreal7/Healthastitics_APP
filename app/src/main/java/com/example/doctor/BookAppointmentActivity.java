@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -51,7 +53,7 @@ public class BookAppointmentActivity extends AppCompatActivity {
         dateButton = findViewById(R.id.bookAppointmentDate);
         timeButton = findViewById(R.id.bookAppointmentTime);
         bookButton = findViewById(R.id.bookAppointment);
-
+        Database db = new Database(this);
         // Disable editing for the fields
         ed1.setKeyListener(null);
         ed2.setKeyListener(null);
@@ -72,11 +74,30 @@ public class BookAppointmentActivity extends AppCompatActivity {
 
         // Time picker button functionality
         timeButton.setOnClickListener(view -> timePickerDialog.show());
-
+        SharedPreferences sharedPreferences = getSharedPreferences("shared_prefs", Context.MODE_PRIVATE);
+        String username = sharedPreferences.getString("username", "");
         // Book appointment button functionality
         bookButton.setOnClickListener(view -> {
+            String appointmentDate = dateButton.getText().toString();
+            String appointmentTime = timeButton.getText().toString();
+            String docName = ed1.getText().toString();
+            if (docName.contains(":")) {
+                docName = docName.substring(docName.indexOf(":") + 1).trim();
+            }
+            String feesText = ed3.getText().toString().replaceAll("[^0-9.]", "");
 
+            if (feesText.isEmpty()) {
+                Toast.makeText(this, "Invalid fee format", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            double fees = Double.parseDouble(feesText);
+            String formattedFees = String.format("%.2f", fees);
+            if (appointmentDate.isEmpty() || appointmentTime.isEmpty()) {
+                Toast.makeText(this, "Please select a date and time", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
+            db.insertBookings(username, docName, appointmentDate, appointmentTime, Double.parseDouble(formattedFees));
 
 
             Toast.makeText(this, "Appointment booked successfully!", Toast.LENGTH_SHORT).show();
