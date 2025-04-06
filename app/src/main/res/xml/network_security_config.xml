@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">10.0.2.2</domain> <!-- For Android emulator -->
+        <domain includeSubdomains="true">localhost</domain>
+        <!-- Add your computer's IP if testing on physical device -->
+
+    </domain-config>
+</network-security-config>

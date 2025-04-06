@@ -55,7 +55,7 @@ public class ViewAppointment extends AppCompatActivity {
                     textView.setText("Patient: " + username + "\nDate: " + appointmentDate +
                             "\nTime: " + appointmentTime + "\nFees: $" + fees + "\nStatus: " + status);
                     textView.setPadding(20, 20, 20, 20);
-
+                    textView.setTextColor(0xFFFFFFFF);
                     // Accept button
                     Button acceptButton = new Button(this);
                     acceptButton.setText("Accept");
