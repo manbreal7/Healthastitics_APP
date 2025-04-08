@@ -258,38 +258,7 @@
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_margin="10dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="8dp"
-            android:id="@+id/fillform">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:contentDescription="Lab Image"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/t1" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/blue_9"
-                    android:gravity="center"
-                    android:text="Fill Form"
-                    android:textColor="@color/blue_2"
-                    android:textSize="12sp" />
-            </RelativeLayout>
-        </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
@@ -310,7 +279,7 @@
                     android:layout_height="match_parent"
                     android:contentDescription="Consultation Image"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/about" />
+                    android:src="@drawable/docai" />
 
                 <TextView
                     android:layout_width="match_parent"

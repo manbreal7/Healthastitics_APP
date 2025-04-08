@@ -62,8 +62,7 @@ public class HomeActivity extends AppCompatActivity {
         CardView article = findViewById(R.id.article);
         article.setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, ArticleActivity.class)));
 
-        CardView fillform = findViewById(R.id.fillform);
-        fillform.setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, FillFormActivity.class)));
+
 
         CardView docai = findViewById(R.id.docai);
         docai.setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, DocAiActivity.class)));

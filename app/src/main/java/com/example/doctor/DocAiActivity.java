@@ -1,5 +1,6 @@
 package com.example.doctor;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,7 +27,7 @@ public class DocAiActivity extends AppCompatActivity {
 
     private EditText symptomEditText;
     private TextView resultTextView;
-    private Button predictButton;
+    private Button predictButton,backButton;
     private static final String TAG = "DocAiActivity";
     private static final String BACKEND_URL = "http://10.0.2.2:3000/analyze-symptoms"; // For emulator
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
@@ -47,7 +48,14 @@ public class DocAiActivity extends AppCompatActivity {
         symptomEditText = findViewById(R.id.symptoms_input);
         resultTextView = findViewById(R.id.textView2);
         predictButton = findViewById(R.id.predict_button);
-
+        backButton = findViewById(R.id.btn_back);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DocAiActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+        });
         predictButton.setOnClickListener(v -> predictDiseaseWithBackend());
     }
 

@@ -5,6 +5,191 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@drawable/bg1"
     tools:context=".FillFormActivity">
 
+    <!-- Glassmorphism Container -->
+    <LinearLayout
+        android:id="@+id/formContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@drawable/glass_background"
+        android:elevation="10dp"
+        android:orientation="vertical"
+        android:padding="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.8">
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/formTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="cursive"
+            android:text="Patient Details"
+            android:textColor="#EBEAEA"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <View android:layout_width="match_parent" android:layout_height="16dp" />
+
+        <!-- Patient Name -->
+        <EditText
+            android:id="@+id/patientName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Enter Patient Name"
+            android:inputType="text"
+            android:padding="12dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#B0BEC5" />
+
+        <View android:layout_width="match_parent" android:layout_height="16dp" />
+
+        <!-- Doctor Name -->
+        <EditText
+            android:id="@+id/doctorName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Enter Doctor Name"
+            android:inputType="text"
+            android:padding="12dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#B0BEC5" />
+
+        <View android:layout_width="match_parent" android:layout_height="16dp" />
+
+        <!-- Symptoms -->
+        <EditText
+            android:id="@+id/patientSymptoms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Enter Symptoms"
+            android:inputType="textMultiLine"
+            android:padding="12dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#B0BEC5" />
+
+        <View android:layout_width="match_parent" android:layout_height="16dp" />
+
+        <!-- Diagnosis -->
+        <EditText
+            android:id="@+id/diagnosis"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Enter Diagnosis"
+            android:inputType="textMultiLine"
+            android:padding="12dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#B0BEC5" />
+
+        <View android:layout_width="match_parent" android:layout_height="16dp" />
+
+        <!-- Prescription -->
+        <EditText
+            android:id="@+id/prescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Enter Prescription"
+            android:inputType="textMultiLine"
+            android:padding="12dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#B0BEC5" />
+
+        <View android:layout_width="match_parent" android:layout_height="16dp" />
+
+        <!-- Additional Info -->
+        <EditText
+            android:id="@+id/furtherInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Additional Information"
+            android:inputType="textMultiLine"
+            android:padding="12dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#B0BEC5" />
+
+        <View android:layout_width="match_parent" android:layout_height="24dp" />
+
+
+        <!-- Select Date -->
+
+        <TextView
+            android:id="@+id/selectDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginRight="90dp"
+            android:text="Select Date"
+            android:textColor="#EBEAEA"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <!-- Spacer -->
+
+
+        <!-- Select Time -->
+
+        <Button
+            android:id="@+id/bookAppointmentDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginRight="90dp"
+            android:background="@drawable/rounded_button"
+            android:padding="12dp"
+            android:text="27/10/2025"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/selectDate2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="90dp"
+            android:layout_marginTop="-80dp"
+            android:text="Select Time"
+            android:textColor="#EBEAEA"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/bookAppointmentTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginRight="-90dp"
+            android:background="@drawable/rounded_button"
+            android:padding="12dp"
+            android:text="10:20"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="24dp" />
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/submit_record"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_button"
+            android:padding="12dp"
+            android:text="Submit"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

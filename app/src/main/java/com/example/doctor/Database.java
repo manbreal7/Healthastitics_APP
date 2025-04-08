@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class Database extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "healthcare.db";
-    private static final int DATABASE_VERSION = 19;
+    private static final int DATABASE_VERSION = 22;
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -75,6 +75,19 @@ public class Database extends SQLiteOpenHelper {
                 "fees TEXT, " +
                 "FOREIGN KEY (doctor_name) REFERENCES users(username) ON DELETE CASCADE)";
         db.execSQL(createDoctorsTable);
+
+        String createMedicalRecordsTable = "CREATE TABLE medical_records (" +
+                "record_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "username TEXT, " +
+                "doctor_name TEXT, " +
+                "symptoms TEXT, " +
+                "diagnosis TEXT, " +
+                "prescription TEXT, " +
+                "notes TEXT, " +
+                "appointment_date TEXT, " +
+                "appointment_time TEXT, " +
+                "FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE)";
+        db.execSQL(createMedicalRecordsTable);
 
         String createBookingsTable = "CREATE TABLE bookings (" +
                 "booking_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -141,7 +154,8 @@ public class Database extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS cart");
         db.execSQL("DROP TABLE IF EXISTS orderplace");
         db.execSQL("DROP TABLE IF EXISTS doctors");
-        db.execSQL("DROP TABLE IF EXISTS bookings"); // Missing table drop
+        db.execSQL("DROP TABLE IF EXISTS bookings");
+        db.execSQL("DROP TABLE IF EXISTS medical_records");// Missing table drop
         onCreate(db);
     }
 
@@ -154,6 +168,26 @@ public class Database extends SQLiteOpenHelper {
         }
         cursor.close();
         return email;
+    }
+
+    public void insertRecords(String username, String doctorName, String symptoms,
+                              String diagnosis, String prescription, String notes,
+                              String appointmentDate, String appointmentTime) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("username", username); // Matches table column
+        values.put("doctor_name", doctorName); // Matches table column
+        values.put("symptoms", diagnosis);
+        values.put("diagnosis", symptoms);
+        values.put("prescription", prescription);
+        values.put("notes", notes);
+        values.put("appointment_date", appointmentDate); // Matches table column
+        values.put("appointment_time", appointmentTime); // Matches table column
+
+        long result = db.insert("medical_records", null, values);
+        db.close();
+
+
     }
     public void insertBookings(String username, String doctorName, String appointmentDate, String appointmentTime, Double fees) {
         SQLiteDatabase db = this.getWritableDatabase();

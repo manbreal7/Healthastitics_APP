@@ -1,6 +1,7 @@
 package com.example.doctor;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -63,6 +64,11 @@ public class ViewAppointment extends AppCompatActivity {
                         db.updateAppointmentStatus(username, appointmentDate, appointmentTime, doctorName, "Accepted");
 //                    MailSender.sendEmail(userEmail, "Appointment Accepted",
 //                            "Your appointment on " + appointmentDate + " at " + appointmentTime + " has been accepted.");
+                        Intent intent = new Intent(ViewAppointment.this, FillFormActivity.class);
+                        intent.putExtra("username", username);
+                        intent.putExtra("appointmentDate", appointmentDate);
+                        intent.putExtra("appointmentTime", appointmentTime);
+                        startActivity(intent);
                         Toast.makeText(this, "Appointment Accepted", Toast.LENGTH_SHORT).show();
                         recreate();
                     });
