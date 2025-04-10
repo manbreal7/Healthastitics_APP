@@ -62,7 +62,8 @@ public class HomeActivity extends AppCompatActivity {
         CardView article = findViewById(R.id.article);
         article.setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, ArticleActivity.class)));
 
-
+        CardView generatePdf = findViewById(R.id.generatepdf);
+        generatePdf.setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, GeneratePdfActivity.class)));
 
         CardView docai = findViewById(R.id.docai);
         docai.setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, DocAiActivity.class)));
