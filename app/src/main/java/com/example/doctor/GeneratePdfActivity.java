@@ -238,6 +238,7 @@ public class GeneratePdfActivity extends AppCompatActivity {
             hospitalInfo.setTextSize(7);
             hospitalInfo.setPadding(0, 0, 0, 20);
             layout.addView(hospitalInfo);
+            //Hospital Details
         }
 
         // Doctor Information
