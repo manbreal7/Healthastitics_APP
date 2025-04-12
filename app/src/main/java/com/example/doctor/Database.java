@@ -280,6 +280,24 @@ public class Database extends SQLiteOpenHelper {
         return doctorList.toArray(new String[0][]);
     }
 
+    public String[] getDoctorDetails(String doctorName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String[] doctorDetails = new String[7];
+        Cursor cursor = db.rawQuery("SELECT doctor_name,specialization,email, hospital_address, experience, mobile_no, fees FROM doctors WHERE doctor_name = ?", new String[]{doctorName});
+        if (cursor.moveToFirst()) {
+            doctorDetails[0] = "Doctor Name : " + cursor.getString(cursor.getColumnIndexOrThrow("doctor_name"));
+            doctorDetails[1] = "Hospital Address : " + cursor.getString(cursor.getColumnIndexOrThrow("hospital_address"));
+            doctorDetails[2] = "Experience : " + cursor.getString(cursor.getColumnIndexOrThrow("experience"));
+            doctorDetails[3] = "Mobile No : " + cursor.getString(cursor.getColumnIndexOrThrow("mobile_no"));
+            doctorDetails[4] = "Fees : ₹" + cursor.getString(cursor.getColumnIndexOrThrow("fees"));
+            doctorDetails[5] = "Specialization : " + cursor.getString(cursor.getColumnIndexOrThrow("specialization"));
+            doctorDetails[6] = "Email : " + cursor.getString(cursor.getColumnIndexOrThrow("email"));
+        }
+        cursor.close();
+        db.close();
+        return doctorDetails;
+    }
+
 
     // Register a new user
     public void register(String username, String email, String password, String userType) {

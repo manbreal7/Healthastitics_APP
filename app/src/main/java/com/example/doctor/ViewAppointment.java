@@ -33,7 +33,14 @@ public class ViewAppointment extends AppCompatActivity {
 
         // Get the LinearLayout where appointments will be displayed
         LinearLayout linearLayout = findViewById(R.id.dynamicAppointments);
-
+        Button backButton = findViewById(R.id.btn__Back);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ViewAppointment.this, DoctorDashboard.class);
+                startActivity(intent);
+            }
+        });
         // Fetch doctor name from SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("shared_prefs", Context.MODE_PRIVATE);
         String doctorName = sharedPreferences.getString("username", "");
@@ -54,7 +61,7 @@ public class ViewAppointment extends AppCompatActivity {
                     // Display appointment details
                     TextView textView = new TextView(this);
                     textView.setText("Patient: " + username + "\nDate: " + appointmentDate +
-                            "\nTime: " + appointmentTime + "\nFees: $" + fees + "\nStatus: " + status);
+                            "\nTime: " + appointmentTime + "\nFees: ₹" + fees + "\nStatus: " + status);
                     textView.setPadding(20, 20, 20, 20);
                     textView.setTextColor(0xFFFFFFFF);
                     // Accept button

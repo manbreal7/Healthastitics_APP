@@ -1,6 +1,7 @@
 package com.example.doctor;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -30,7 +31,12 @@ public class GeneratePdfActivity extends AppCompatActivity {
 
     private Database database;
     private String username;
+    Button backButton;
 
+    String HospitalAddr;
+    String Exp;
+    String Email;
+    String Specialization;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +45,14 @@ public class GeneratePdfActivity extends AppCompatActivity {
 
         // Initialize database
         database = new Database(this);
-
+        backButton = findViewById(R.id.btn_Back);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GeneratePdfActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+        });
         // Get username from shared preferences
         SharedPreferences sharedPreferences = getSharedPreferences("shared_prefs", Context.MODE_PRIVATE);
         username = sharedPreferences.getString("username", "");
@@ -117,6 +130,10 @@ public class GeneratePdfActivity extends AppCompatActivity {
 
             // Create download button
             Button downloadBtn = new Button(this);
+
+
+
+            downloadBtn.setGravity(Gravity.CENTER);
             downloadBtn.setText("Download PDF");
             downloadBtn.setOnClickListener(v -> generatePdf(
                     recordId, doctorName, symptoms, diagnosis,
@@ -182,10 +199,20 @@ public class GeneratePdfActivity extends AppCompatActivity {
     private View createMedicalReportView(String doctorName, String symptoms, String diagnosis,
                                          String prescription, String notes, String appointmentDate,
                                          String appointmentTime) {
+        Database database = new Database(this);
         // Main container
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setPadding(50, 50, 50, 50); // Padding in points
+
+        String[] docDetails = database.getDoctorDetails(doctorName);
+        if (docDetails.length > 0) {
+            HospitalAddr = docDetails[1];
+            Exp = docDetails[2];
+            Specialization = docDetails[5];
+            Email = docDetails[6];
+        }
+
 
         // Report Header
         TextView header = new TextView(this);
@@ -200,15 +227,24 @@ public class GeneratePdfActivity extends AppCompatActivity {
         TextView patientInfo = new TextView(this);
         patientInfo.setText("Patient: " + username + "\nDate: " + formatDate(appointmentDate) +
                 " | Time: " + formatTime(appointmentTime));
-        patientInfo.setTextSize(12);
+        patientInfo.setTextSize(7);
         patientInfo.setPadding(0, 0, 0, 20);
         layout.addView(patientInfo);
+
+        // Hospital Information
+        if (!TextUtils.isEmpty(HospitalAddr)) {
+            TextView hospitalInfo = new TextView(this);
+            hospitalInfo.setText("" + HospitalAddr + "\n" + Exp + "Years" + "\n" + Specialization + "\n" + Email);
+            hospitalInfo.setTextSize(7);
+            hospitalInfo.setPadding(0, 0, 0, 20);
+            layout.addView(hospitalInfo);
+        }
 
         // Doctor Information
         if (!TextUtils.isEmpty(doctorName)) {
             TextView doctorInfo = new TextView(this);
-            doctorInfo.setText("Attending Physician: Dr. " + doctorName);
-            doctorInfo.setTextSize(12);
+            doctorInfo.setText("Attending Doctor: " + doctorName);
+            doctorInfo.setTextSize(7);
             doctorInfo.setPadding(0, 0, 0, 30);
             layout.addView(doctorInfo);
         }
@@ -227,14 +263,14 @@ public class GeneratePdfActivity extends AppCompatActivity {
 
         TextView titleView = new TextView(this);
         titleView.setText(title + ":");
-        titleView.setTextSize(14);
+        titleView.setTextSize(7);
         titleView.setTypeface(null, Typeface.BOLD);
         titleView.setPadding(0, 15, 0, 5);
         parent.addView(titleView);
 
         TextView contentView = new TextView(this);
         contentView.setText(content);
-        contentView.setTextSize(12);
+        contentView.setTextSize(7);
         contentView.setPadding(20, 0, 0, 20);
         parent.addView(contentView);
     }

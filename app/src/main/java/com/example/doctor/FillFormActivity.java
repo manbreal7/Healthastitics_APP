@@ -67,6 +67,8 @@ public class FillFormActivity extends AppCompatActivity {
                 Database db = new Database(this);
                 db.insertRecords(patientName,docName,diagnosis,symptoms,prescription,advice,apptDate,appTime);
                 Toast.makeText(this, "Record Submitted", Toast.LENGTH_SHORT).show();
+                Intent intent1 = new Intent(FillFormActivity.this, ViewAppointment.class);
+                startActivity(intent1);
             }
         });
         dateButton.setOnClickListener(view -> {

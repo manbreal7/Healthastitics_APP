@@ -17,6 +17,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+
+
         <LinearLayout
             android:id="@+id/appointmentsLayout"
             android:layout_width="match_parent"
@@ -27,6 +29,17 @@
             android:orientation="vertical"
             android:padding="24dp"
             app:layout_constraintWidth_percent="0.9">
+
+            <Button
+                android:id="@+id/btn__Back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_margin="16dp"
+                android:backgroundTint="@color/blue_5"
+                android:text="Back"
+                android:textColor="@color/blue_2"
+                android:textSize="16sp" />
 
             <!-- App Title -->
             <TextView
