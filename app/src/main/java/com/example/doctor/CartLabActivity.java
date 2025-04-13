@@ -56,7 +56,7 @@ public class CartLabActivity extends AppCompatActivity {
         btnCheckout = findViewById(R.id.checkout);
         btnBack = findViewById(R.id.btnback);
         lvData = findViewById(R.id.lvdata);
-
+    //hello
         // Fetch user data from SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("shared_prefs", Context.MODE_PRIVATE);
         String username = sharedPreferences.getString("username", "");

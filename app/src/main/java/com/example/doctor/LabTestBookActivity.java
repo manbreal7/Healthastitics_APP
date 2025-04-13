@@ -35,7 +35,7 @@ public class LabTestBookActivity extends AppCompatActivity {
         String priceString = intent.getStringExtra("price");
         String date = intent.getStringExtra("date");
         String time = intent.getStringExtra("time");
-
+        //hello
         float amount = 0;
         if (priceString != null && priceString.contains("₹")) {
             try {
