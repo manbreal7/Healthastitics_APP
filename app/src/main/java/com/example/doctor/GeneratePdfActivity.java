@@ -1,28 +1,43 @@
 package com.example.doctor;
 
+import android.Manifest;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.pdf.PdfDocument;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -37,45 +52,49 @@ public class GeneratePdfActivity extends AppCompatActivity {
     String Exp;
     String Email;
     String Specialization;
+
+    private static final int REQUEST_STORAGE_PERMISSION = 100;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_generate_pdf);
 
-        // Initialize database
         database = new Database(this);
         backButton = findViewById(R.id.btn_Back);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(GeneratePdfActivity.this, HomeActivity.class);
-                startActivity(intent);
-            }
+
+        backButton.setOnClickListener(v -> {
+            Intent intent = new Intent(GeneratePdfActivity.this, HomeActivity.class);
+            startActivity(intent);
         });
-        // Get username from shared preferences
+
         SharedPreferences sharedPreferences = getSharedPreferences("shared_prefs", Context.MODE_PRIVATE);
         username = sharedPreferences.getString("username", "");
 
-        // Get the LinearLayout where records will be displayed
         LinearLayout recordsContainer = findViewById(R.id.recordsContainer);
-
-        // Load and display medical records
         loadMedicalRecords(recordsContainer);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        REQUEST_STORAGE_PERMISSION);
+            }
+        }
     }
 
     private void loadMedicalRecords(LinearLayout container) {
-        // Get readable database
         SQLiteDatabase db = database.getReadableDatabase();
 
-        // Query the database for all records of this user
         Cursor cursor = db.query(
                 "medical_records",
                 null,
                 "username = ?",
                 new String[]{username},
                 null, null,
-                "appointment_date DESC, appointment_time DESC" // Sort by date and time
+                "appointment_date DESC, appointment_time DESC"
         );
 
         if (cursor.getCount() == 0) {
@@ -89,7 +108,6 @@ public class GeneratePdfActivity extends AppCompatActivity {
         }
 
         while (cursor.moveToNext()) {
-            // Extract record data
             int recordId = cursor.getInt(cursor.getColumnIndexOrThrow("record_id"));
             String doctorName = cursor.getString(cursor.getColumnIndexOrThrow("doctor_name"));
             String symptoms = cursor.getString(cursor.getColumnIndexOrThrow("symptoms"));
@@ -99,53 +117,34 @@ public class GeneratePdfActivity extends AppCompatActivity {
             String appointmentDate = cursor.getString(cursor.getColumnIndexOrThrow("appointment_date"));
             String appointmentTime = cursor.getString(cursor.getColumnIndexOrThrow("appointment_time"));
 
-            // Create a container for each record
             LinearLayout recordLayout = new LinearLayout(this);
             recordLayout.setOrientation(LinearLayout.VERTICAL);
             recordLayout.setPadding(20, 20, 20, 20);
             recordLayout.setBackgroundResource(R.drawable.card_background);
 
-            // Set layout margins to create space between records
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
             layoutParams.setMargins(0, 0, 0, 20);
             recordLayout.setLayoutParams(layoutParams);
 
-            // Create TextViews for each field
-            TextView tvDoctor = createTextView("Doctor: " + doctorName, 16, true);
-            TextView tvDate = createTextView("Date: " + appointmentDate + " at " + appointmentTime, 14, false);
-            TextView tvSymptoms = createTextView("Symptoms: " + symptoms, 14, false);
-            TextView tvDiagnosis = createTextView("Diagnosis: " + diagnosis, 14, false);
-            TextView tvPrescription = createTextView("Prescription: " + prescription, 14, false);
-            TextView tvNotes = createTextView("Notes: " + notes, 14, false);
+            recordLayout.addView(createTextView("Doctor: " + doctorName, 16, true));
+            recordLayout.addView(createTextView("Date: " + appointmentDate + " at " + appointmentTime, 14, false));
+            recordLayout.addView(createTextView("Symptoms: " + symptoms, 14, false));
+            recordLayout.addView(createTextView("Diagnosis: " + diagnosis, 14, false));
+            recordLayout.addView(createTextView("Prescription: " + prescription, 14, false));
+            recordLayout.addView(createTextView("Notes: " + notes, 14, false));
 
-            // Add TextViews to the record layout
-            recordLayout.addView(tvDoctor);
-            recordLayout.addView(tvDate);
-            recordLayout.addView(tvSymptoms);
-            recordLayout.addView(tvDiagnosis);
-            recordLayout.addView(tvPrescription);
-            recordLayout.addView(tvNotes);
-
-            // Create download button
             Button downloadBtn = new Button(this);
-
-
-
-            downloadBtn.setGravity(Gravity.CENTER);
             downloadBtn.setText("Download PDF");
             downloadBtn.setOnClickListener(v -> generatePdf(
                     recordId, doctorName, symptoms, diagnosis,
-                    prescription, notes, appointmentDate, appointmentTime
-            ));
-
-            // Add button to the record layout
+                    prescription, notes, appointmentDate, appointmentTime));
             recordLayout.addView(downloadBtn);
 
-            // Add the record layout to the main container
             container.addView(recordLayout);
         }
+
         cursor.close();
     }
 
@@ -154,9 +153,7 @@ public class GeneratePdfActivity extends AppCompatActivity {
         textView.setText(text);
         textView.setTextSize(textSize);
         textView.setPadding(0, 8, 0, 8);
-        if (isBold) {
-            textView.setTypeface(null, android.graphics.Typeface.BOLD);
-        }
+        if (isBold) textView.setTypeface(null, Typeface.BOLD);
         return textView;
     }
 
@@ -165,45 +162,80 @@ public class GeneratePdfActivity extends AppCompatActivity {
                              String appointmentDate, String appointmentTime) {
         try {
             PdfDocument document = new PdfDocument();
-            // A4 size in points (595 x 842)
-            PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(595, 842, 1).create();
-            PdfDocument.Page page = document.startPage(pageInfo);
+            int pageWidth = 595;
 
-            // Create content view with only the passed parameters
             View content = createMedicalReportView(doctorName, symptoms, diagnosis,
-                    prescription, notes, appointmentDate,
-                    appointmentTime);
-            content.measure(
-                    View.MeasureSpec.makeMeasureSpec(pageInfo.getPageWidth(), View.MeasureSpec.EXACTLY),
-                    View.MeasureSpec.makeMeasureSpec(pageInfo.getPageHeight(), View.MeasureSpec.AT_MOST));
-            content.layout(0, 0, pageInfo.getPageWidth(), pageInfo.getPageHeight());
-            content.draw(page.getCanvas());
+                    prescription, notes, appointmentDate, appointmentTime);
 
+            content.measure(View.MeasureSpec.makeMeasureSpec(pageWidth, View.MeasureSpec.EXACTLY),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+            int contentHeight = content.getMeasuredHeight();
+
+            PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(pageWidth, Math.max(842, contentHeight), 1).create();
+            PdfDocument.Page page = document.startPage(pageInfo);
+            Canvas canvas = page.getCanvas();
+
+            content.layout(0, 0, content.getMeasuredWidth(), contentHeight);
+            content.draw(canvas);
             document.finishPage(page);
 
-            // Generate filename
             String fileName = "Medical_Report_" + username + "_" + recordId + ".pdf";
-            File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-            File file = new File(downloadsDir, fileName);
 
-            // Save the document
-            document.writeTo(new FileOutputStream(file));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Downloads.DISPLAY_NAME, fileName);
+                values.put(MediaStore.Downloads.MIME_TYPE, "application/pdf");
+                values.put(MediaStore.Downloads.IS_PENDING, 1);
+
+                ContentResolver resolver = getContentResolver();
+                Uri collection = MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
+                Uri fileUri = resolver.insert(collection, values);
+
+                if (fileUri != null) {
+                    OutputStream out = resolver.openOutputStream(fileUri);
+                    document.writeTo(out);
+                    out.close();
+
+                    values.clear();
+                    values.put(MediaStore.Downloads.IS_PENDING, 0);
+                    resolver.update(fileUri, values, null, null);
+
+                    Toast.makeText(this, "PDF saved to Downloads", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, "Failed to create file", Toast.LENGTH_SHORT).show();
+                }
+
+            } else {
+                File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                File file = new File(downloadsDir, fileName);
+                FileOutputStream fos = new FileOutputStream(file);
+                document.writeTo(fos);
+                fos.close();
+                Toast.makeText(this, "PDF saved to " + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
+            }
+
             document.close();
 
-            Toast.makeText(this, "Report saved to Downloads", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
-            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "PDF error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
     private View createMedicalReportView(String doctorName, String symptoms, String diagnosis,
                                          String prescription, String notes, String appointmentDate,
                                          String appointmentTime) {
-        Database database = new Database(this);
-        // Main container
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(50, 50, 50, 50); // Padding in points
+        layout.setPadding(40, 40, 40, 40);
+        layout.setBackgroundColor(Color.WHITE);
+
+        ImageView logoView = new ImageView(this);
+        logoView.setImageResource(R.drawable.logo);
+        LinearLayout.LayoutParams logoParams = new LinearLayout.LayoutParams(100, 100);
+        logoParams.gravity = Gravity.CENTER_HORIZONTAL;
+        logoParams.setMargins(0, 0, 0, 20);
+        logoView.setLayoutParams(logoParams);
+        layout.addView(logoView);
 
         String[] docDetails = database.getDoctorDetails(doctorName);
         if (docDetails.length > 0) {
@@ -213,50 +245,53 @@ public class GeneratePdfActivity extends AppCompatActivity {
             Email = docDetails[6];
         }
 
-
-        // Report Header
         TextView header = new TextView(this);
         header.setText("MEDICAL REPORT");
-        header.setTextSize(18);
+        header.setTextSize(20);
         header.setTypeface(null, Typeface.BOLD);
         header.setGravity(Gravity.CENTER);
-        header.setPadding(0, 0, 0, 30);
+        header.setTextColor(Color.parseColor("#2E86C1"));
+        header.setPadding(0, 10, 0, 30);
         layout.addView(header);
 
-        // Patient Information
-        TextView patientInfo = new TextView(this);
-        patientInfo.setText("Patient: " + username + "\nDate: " + formatDate(appointmentDate) +
-                " | Time: " + formatTime(appointmentTime));
-        patientInfo.setTextSize(7);
-        patientInfo.setPadding(0, 0, 0, 20);
-        layout.addView(patientInfo);
+        LinearLayout card = new LinearLayout(this);
+        card.setOrientation(LinearLayout.VERTICAL);
+        card.setBackgroundColor(Color.parseColor("#F2F3F4"));
+        card.setPadding(30, 30, 30, 30);
+        LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        cardParams.setMargins(0, 0, 0, 20);
+        card.setLayoutParams(cardParams);
 
-        // Hospital Information
+        card.addView(createSection("Patient", username));
+        card.addView(createSection("Date", formatDate(appointmentDate) + " | Time: " + formatTime(appointmentTime)));
+
         if (!TextUtils.isEmpty(HospitalAddr)) {
-            TextView hospitalInfo = new TextView(this);
-            hospitalInfo.setText("" + HospitalAddr + "\n" + Exp + "Years" + "\n" + Specialization + "\n" + Email);
-            hospitalInfo.setTextSize(7);
-            hospitalInfo.setPadding(0, 0, 0, 20);
-            layout.addView(hospitalInfo);
-            //Hospital Details
+            card.addView(createSection("Hospital Info", HospitalAddr + "\n" + Exp + " Years\n" + Specialization + "\n" + Email));
         }
 
-        // Doctor Information
         if (!TextUtils.isEmpty(doctorName)) {
-            TextView doctorInfo = new TextView(this);
-            doctorInfo.setText("Attending Doctor: " + doctorName);
-            doctorInfo.setTextSize(7);
-            doctorInfo.setPadding(0, 0, 0, 30);
-            layout.addView(doctorInfo);
+            card.addView(createSection("Attending Doctor", doctorName));
         }
 
-        // Medical Sections - only add if content exists
-        addReportSection(layout, "Symptoms", symptoms);
-        addReportSection(layout, "Diagnosis", diagnosis);
-        addReportSection(layout, "Prescription", prescription);
-        addReportSection(layout, "Notes", notes);
+        addReportSection(card, "Symptoms", symptoms);
+        addReportSection(card, "Diagnosis", diagnosis);
+        addReportSection(card, "Prescription", prescription);
+        addReportSection(card, "Notes", notes);
+
+        layout.addView(card);
 
         return layout;
+    }
+
+    private TextView createSection(String title, String content) {
+        TextView section = new TextView(this);
+        section.setText(title + ": " + content);
+        section.setTextSize(7);
+        section.setPadding(0, 0, 0, 20);
+        return section;
     }
 
     private void addReportSection(LinearLayout parent, String title, String content) {
@@ -283,7 +318,7 @@ public class GeneratePdfActivity extends AppCompatActivity {
             Date date = inputFormat.parse(dateStr);
             return outputFormat.format(date);
         } catch (Exception e) {
-            return dateStr; // Return original if parsing fails
+            return dateStr;
         }
     }
 
@@ -294,14 +329,26 @@ public class GeneratePdfActivity extends AppCompatActivity {
             Date time = inputFormat.parse(timeStr);
             return outputFormat.format(time);
         } catch (Exception e) {
-            return timeStr; // Return original if parsing fails
+            return timeStr;
         }
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (database != null) {
             database.close();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_STORAGE_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission denied. Cannot save PDF to external storage.", Toast.LENGTH_LONG).show();
+            }
         }
     }
 }
