@@ -6,4 +6,12 @@
     </style>
 
     <style name="Theme.Doctor" parent="Base.Theme.Doctor" />
+
+    <style name="Theme.Doctor.Splash" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
 </resources>
