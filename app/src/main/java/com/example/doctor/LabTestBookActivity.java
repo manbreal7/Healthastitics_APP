@@ -37,9 +37,9 @@ public class LabTestBookActivity extends AppCompatActivity {
         String time = intent.getStringExtra("time");
 
         float amount = 0;
-        if (priceString != null && priceString.contains(":")) {
+        if (priceString != null && priceString.contains("₹")) {
             try {
-                String[] priceParts = priceString.split(":");
+                String[] priceParts = priceString.split("₹");
                 amount = Float.parseFloat(priceParts[1].trim()); // Extract and parse amount
             } catch (NumberFormatException e) {
                 Toast.makeText(this, "Invalid Number Format.", Toast.LENGTH_SHORT).show();
