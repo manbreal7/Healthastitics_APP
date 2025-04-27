@@ -16,7 +16,7 @@
 - [Setup Instructions](#setup-instructions)
 - [Contributing](#contributing)
 - [License](#license)
-//I am Manan Bhatia htdtsthh
+
 ## Features
 - **Login & Logout**: Secure login system with user authentication.
 - **Doctor Finder**: Search and book consultations with doctors.
