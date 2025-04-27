@@ -75,6 +75,8 @@ The app uses an SQL-based database for storing all the data related to users, or
 - **Orders**: Stores the details of orders placed by users.
 - **Doctors**: Contains doctor information for search and consultation.
 - **LabTests**: Stores lab test information and user bookings.
+- **AI disease detector: Allows you to type four symptoms and predicts disease correctly with utmost accuracy
+  
 
 ### Sample Data Structure
 
@@ -87,4 +89,4 @@ The app uses an SQL-based database for storing all the data related to users, or
 To run this app locally:
 1. Clone the repository:
    ```bash
-   git clone https://github.com/Densingh/hospital-management-app.git
+   git clone https://github.com/manbreal7/Healthastitics_APP.git
